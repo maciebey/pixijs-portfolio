@@ -2,6 +2,8 @@ import { Application, Polygon, Graphics } from 'pixi.js';
 import { Actions, Interpolations } from 'pixi-actions';
 import '@pixi/graphics-extras';
 
+import { vertDistance } from './config';
+
 interface GraphicsState {
     name: string;
     priority: number;
@@ -12,16 +14,31 @@ interface graphicsState {
     state: GraphicsState;
 }
 const graphicStateArr: graphicsState[][] = [];
+
+let rowLength = 0;
+let rowCount = 0;
+
 const polyTest = (app: Application<HTMLCanvasElement>) => {
-    for (let i = 0; i < 6; i++) {
+    // let offSetX: number;
+    console.log(window.innerWidth, window.innerHeight)
+    rowCount = Math.ceil(window.innerHeight / vertDistance) + 1;
+    rowLength = Math.ceil(window.innerWidth / 50) + 1;
+    for (let i = 0; i < rowCount; i++) {
+        // offSetX = i % 2 === 0 ? 0 : 25;
         const row: graphicsState[] = [];
-        for (let j = 0; j < 6; j++) {
+        for (let j = 0; j < rowLength; j++) {
             const graphics = new Graphics();
-            graphics.beginFill(0xDE3249);
+            graphics.beginFill(0x000000);
             graphics.drawRegularPolygon(0, 0, 28.87, 6);
             graphics.endFill();
-            graphics.x = 50 + j * 100;
-            graphics.y = 50 + i * 100;
+            if (j === 0) {
+                graphics.beginFill(0x1C189F);
+            } else {
+                graphics.beginFill(0xDE3249);
+            }
+            graphics.drawRegularPolygon(0, 0, 27.87, 6);
+            graphics.x = j * 50 + (i % 2 === 0 ? 0 : 25);
+            graphics.y = i * vertDistance;
             const state: GraphicsState = {
                 name: 'idle',
                 priority: 0,
@@ -41,8 +58,8 @@ const polyTest = (app: Application<HTMLCanvasElement>) => {
             setTimeout(() => {
                 Actions.repeat(
                     Actions.sequence(
-                        Actions.scaleTo(graphics, 2, 2,   1, Interpolations.smooth),
-                        Actions.scaleTo(graphics, .5, .5, 1, Interpolations.smooth),
+                        Actions.scaleTo(graphics,  1.25, 1.25, 2, Interpolations.smooth),
+                        Actions.scaleTo(graphics,   .75,  .75, 2, Interpolations.smooth),
                     )
                 ).play();
             }, 1000 + (i * 100));

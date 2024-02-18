@@ -1,11 +1,13 @@
-import { Application, Assets, Sprite } from 'pixi.js';
+import { Application, Sprite } from 'pixi.js';
 import { polyTest } from './poly';
 import { Actions } from 'pixi-actions';
 
 // The application will create a renderer using WebGL, if possible,
 // with a fallback to a canvas render. It will also setup the ticker
 // and the root stage PIXI.Container
-const app = new Application<HTMLCanvasElement>();
+const app = new Application<HTMLCanvasElement>({
+    resizeTo: window,
+});
 
 // The application will create a canvas element for you that you
 // can then insert into the DOM
