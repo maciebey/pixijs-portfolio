@@ -18,7 +18,7 @@ const graphicStateArr: graphicsState[][] = [];
 let rowLength = 0;
 let rowCount = 0;
 
-const polyTest = (app: Application<HTMLCanvasElement>) => {
+const setupTile = (app: Application<HTMLCanvasElement>) => {
     // let offSetX: number;
     console.log(window.innerWidth, window.innerHeight)
     rowCount = Math.ceil(window.innerHeight / vertDistance) + 1;
@@ -49,22 +49,24 @@ const polyTest = (app: Application<HTMLCanvasElement>) => {
         }
         graphicStateArr.push(row);
     }
+}
 
-    const j = 0
+const activateRunner = () => {
     for (let i=0; i<graphicStateArr[0].length; i++) {
-        for(const gsRow of graphicStateArr) {
-            // const gsRow = graphicStateArr[0];
-            const {graphics} = gsRow[i];
+        for (let j=0; j<graphicStateArr.length; j++) {
+            const {graphics} = graphicStateArr[j][i];
             setTimeout(() => {
-                Actions.repeat(
-                    Actions.sequence(
-                        Actions.scaleTo(graphics,  1.25, 1.25, 2, Interpolations.smooth),
-                        Actions.scaleTo(graphics,   .75,  .75, 2, Interpolations.smooth),
-                    )
+                Actions.sequence(
+                    Actions.scaleTo(graphics,   .75,  .75, .2, Interpolations.linear),
+                    Actions.scaleTo(graphics,  1.25, 1.25, .2, Interpolations.linear),
+                    Actions.scaleTo(graphics,     1,    1, .1, Interpolations.linear),
                 ).play();
-            }, 1000 + (i * 100));
+            }, (i * 100) + ( j * 10));
         }
     }
 }
 
-export { polyTest };
+export {
+    setupTile,
+    activateRunner,
+};

@@ -1,5 +1,5 @@
 import { Application, Sprite } from 'pixi.js';
-import { polyTest } from './poly';
+import { setupTile, activateRunner } from './poly';
 import { Actions } from 'pixi-actions';
 
 // The application will create a renderer using WebGL, if possible,
@@ -39,4 +39,11 @@ app.ticker.add((delta) => {
     Actions.tick(delta/60)
 });
 
-polyTest(app);
+// create tile
+setupTile(app);
+// button listeners
+window.onload = () => {
+    document.getElementById("runner-button").onclick = (event) => {
+        activateRunner();
+    }
+}
