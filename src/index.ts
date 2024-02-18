@@ -1,4 +1,6 @@
 import { Application, Assets, Sprite } from 'pixi.js';
+import { polyTest } from './poly';
+import { Actions } from 'pixi-actions';
 
 // The application will create a renderer using WebGL, if possible,
 // with a fallback to a canvas render. It will also setup the ticker
@@ -26,8 +28,13 @@ bunny.anchor.y = 0.5;
 // Add the bunny to the scene we are building
 app.stage.addChild(bunny);
 
+app.ticker.maxFPS = 60;
+
 // Listen for frame updates
-app.ticker.add(() => {
+app.ticker.add((delta) => {
     // each frame we spin the bunny around a bit
-    bunny.rotation += 0.01;
+    bunny.rotation += 0.02;
+    Actions.tick(delta/60)
 });
+
+polyTest(app);
