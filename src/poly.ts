@@ -1,5 +1,5 @@
 import { Application, Polygon, Graphics, Sprite, FederatedPointerEvent } from 'pixi.js';
-import { Actions, Interpolations } from 'pixi-actions';
+import { Action, Actions, Interpolations } from 'pixi-actions';
 import '@pixi/graphics-extras';
 
 import { vertDistance } from './config';
@@ -8,7 +8,7 @@ interface spriteState {
     name: string;
     center: {x: number, y: number};
     priority: number;
-    actionSequence: Actions[];
+    currentAction: Action;
 }
 interface SpriteWithState {
     sprite: Sprite;
@@ -20,16 +20,17 @@ let rowLength = 0;
 let rowCount = 0;
 
 const createBaseTexture = (app: Application, j:number = 0) => {
+    const width = 28.87;
     const graphic = new Graphics();
     graphic.beginFill(0x000000);
-    graphic.drawRegularPolygon(0, 0, 28.87, 6);
+    graphic.drawRegularPolygon(0, 0, width, 6);
     graphic.endFill();
     if (j === 0) {
-        graphic.beginFill(0x1C189F);
+        graphic.beginFill(0xD6D6D6);
     } else {
         graphic.beginFill(0xDE3249);
     }
-    graphic.drawRegularPolygon(0, 0, 27.87, 6);
+    graphic.drawRegularPolygon(0, 0, (width - 1), 6);
     const texture = app.renderer.generateTexture(graphic)
     return texture;
 }
@@ -53,7 +54,7 @@ const setupTile = (app: Application) => {
                 name: 'idle',
                 center: {x: hexagonSprite.x, y: hexagonSprite.y},
                 priority: 0,
-                actionSequence: []
+                currentAction: null
             }
             row.push({sprite: hexagonSprite, state});
             app.stage.addChild(hexagonSprite)
@@ -104,7 +105,10 @@ const updateHover = (i: number, j: number) => {
         prevState.name = 'idle';
         prevState.priority = 0;
         prevSprite.zIndex = 0;
-        Actions.sequence(
+        if (prevState.currentAction !== null) {
+            prevState.currentAction.stop();
+        }
+        prevState.currentAction = Actions.sequence(
             Actions.scaleTo(prevSprite, 1, 1, .1, Interpolations.linear),
         ).play();
     }
@@ -114,7 +118,7 @@ const updateHover = (i: number, j: number) => {
     state.name = 'hover';
     state.priority = 1;
     sprite.zIndex = 100;
-    Actions.sequence(
+    state.currentAction = Actions.sequence(
         Actions.scaleTo(sprite, 1.3, 1.3, .1, Interpolations.linear),
         // Actions.tintTo(graphics, 0x00FF00, .1, Interpolations.linear),
     ).play();
