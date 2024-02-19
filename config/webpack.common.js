@@ -8,9 +8,17 @@ const CopyWebpackPlugin = require('copy-webpack-plugin');
 module.exports = {
     context: root,
     entry: path.join(root, 'src/index.ts'),
-    devtool: 'inline-source-map',
+    module: {
+        rules: [
+            {
+                test: /\.(ts)$/,
+                exclude: /node_modules/,
+                use: ['babel-loader']
+            }
+        ]
+    },
     resolve: {
-        extensions: [ '.tsx', '.ts', '.js' ]
+        extensions: ['.tsx', '.ts', '.js', '.css']
     },
     plugins: [
         new CleanWebpackPlugin(),
