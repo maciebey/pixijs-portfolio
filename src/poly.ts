@@ -1,4 +1,4 @@
-import { Application, Polygon, Graphics, Sprite, FederatedPointerEvent } from 'pixi.js';
+import { Application, Graphics, Sprite } from 'pixi.js';
 import { Action, Actions, Interpolations } from 'pixi-actions';
 import '@pixi/graphics-extras';
 
@@ -20,17 +20,19 @@ let activeRowLength = 0;
 let activeRowCount = 0;
 
 const createBaseTexture = (app: Application, j:number = 0) => {
-    const width = 28.87;
+    const width = 100;
+    const hexR = (width / 2) / Math.cos(30 * Math.PI / 180);
+    const innerHexR = ((width/ 2) - 2)  / Math.cos(30 * Math.PI / 180);
     const graphic = new Graphics();
     graphic.beginFill(0x000000);
-    graphic.drawRegularPolygon(0, 0, width, 6);
+    graphic.drawRegularPolygon(0, 0, hexR, 6);
     graphic.endFill();
     if (j === 0) {
         graphic.beginFill(0xD6D6D6);
     } else {
         graphic.beginFill(0xDE3249);
     }
-    graphic.drawRegularPolygon(0, 0, (width - 1), 6);
+    graphic.drawRegularPolygon(0, 0, innerHexR, 6);
     const texture = app.renderer.generateTexture(graphic)
     return texture;
 }
@@ -57,6 +59,7 @@ const setupTile = (app: Application) => {
             hexagonSprite.y = i * vertDistance - 25;
             hexagonSprite.anchor.x = 0.5;
             hexagonSprite.anchor.y = 0.5;
+            hexagonSprite.scale.set(.5, .5);
             const state: spriteState = {
                 name: 'idle',
                 center: {x: hexagonSprite.x, y: hexagonSprite.y},
@@ -83,16 +86,16 @@ const activateRunner = () => {
             const {sprite, state} = spriteStateArr[j][i];
             setTimeout(() => {
                 Actions.sequence(
-                    Actions.scaleTo(sprite,   .75,  .75, .2, Interpolations.linear),
-                    Actions.scaleTo(sprite,  1.25, 1.25, .2, Interpolations.linear),
-                    Actions.scaleTo(sprite,     1,    1, .1, Interpolations.linear),
+                    Actions.scaleTo(sprite,    .4,   .4, .2, Interpolations.linear),
+                    Actions.scaleTo(sprite,    .6,   .6, .2, Interpolations.linear),
+                    Actions.scaleTo(sprite,    .5,   .5, .2, Interpolations.linear),
                     // Actions.runFunc(()=>{
                     //     state.name = 'idle';
                     //     state.priority = 0;
                     //     updateHover
                     // })
                 ).play();
-            }, (i * 100) + ( j * 10));
+            }, (i * 10) + ( j * 50));
         }
     }
 }
@@ -117,7 +120,7 @@ const updateHover = (i: number, j: number) => {
             prevState.currentAction.stop();
         }
         prevState.currentAction = Actions.sequence(
-            Actions.scaleTo(prevSprite, 1, 1, .1, Interpolations.linear),
+            Actions.scaleTo(prevSprite, .5, .5, .1, Interpolations.linear),
         ).play();
     }
     activeSpriteAndPosition.sprite = sprite; 
@@ -127,7 +130,7 @@ const updateHover = (i: number, j: number) => {
     state.priority = 1;
     sprite.zIndex = 100;
     state.currentAction = Actions.sequence(
-        Actions.scaleTo(sprite, 1.3, 1.3, .1, Interpolations.linear),
+        Actions.scaleTo(sprite, .7, .7, .1, Interpolations.linear),
         // Actions.tintTo(graphics, 0x00FF00, .1, Interpolations.linear),
     ).play();
 }
