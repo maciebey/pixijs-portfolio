@@ -1,6 +1,7 @@
 import { Application, Sprite } from 'pixi.js';
-import { setupTile, activateRunner } from './poly';
 import { Actions } from 'pixi-actions';
+
+import { setupTile, activateRunner } from './poly';
 
 // The application will create a renderer using WebGL, if possible,
 // with a fallback to a canvas render. It will also setup the ticker
@@ -8,6 +9,7 @@ import { Actions } from 'pixi-actions';
 const app = new Application<HTMLCanvasElement>({
     resizeTo: window,
 });
+app.stage.sortableChildren = true;
 
 // The application will create a canvas element for you that you
 // can then insert into the DOM
@@ -41,9 +43,18 @@ app.ticker.add((delta) => {
 
 // create tile
 setupTile(app);
-// button listeners
+
 window.onload = () => {
+    // window.addEventListener('mousemove', (event) => {
+    //     updateHover(event);
+    // });
+
+    // button listeners
     document.getElementById("runner-button").onclick = (event) => {
         activateRunner();
     }
+
+    // setInterval(() => {
+    //     activateRunner();
+    // }, 5000);
 }

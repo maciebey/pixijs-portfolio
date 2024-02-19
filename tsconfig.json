@@ -3,6 +3,7 @@
     //     "*": ["types/*.d.ts"]
     // },
     "compilerOptions": {
+        "allowSyntheticDefaultImports": true,
         "lib":["es2015", "dom"],
         "sourceMap": true,
         "noImplicitAny": true,

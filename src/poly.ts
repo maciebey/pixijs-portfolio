@@ -1,72 +1,127 @@
-import { Application, Polygon, Graphics } from 'pixi.js';
+import { Application, Polygon, Graphics, Sprite, FederatedPointerEvent } from 'pixi.js';
 import { Actions, Interpolations } from 'pixi-actions';
 import '@pixi/graphics-extras';
 
 import { vertDistance } from './config';
 
-interface GraphicsState {
+interface spriteState {
     name: string;
+    center: {x: number, y: number};
     priority: number;
     actionSequence: Actions[];
 }
-interface graphicsState {
-    graphics: Graphics;
-    state: GraphicsState;
+interface SpriteWithState {
+    sprite: Sprite;
+    state: spriteState;
 }
-const graphicStateArr: graphicsState[][] = [];
+const spriteStateArr: SpriteWithState[][] = [];
 
 let rowLength = 0;
 let rowCount = 0;
 
-const setupTile = (app: Application<HTMLCanvasElement>) => {
+const createBaseTexture = (app: Application, j:number = 0) => {
+    const graphic = new Graphics();
+    graphic.beginFill(0x000000);
+    graphic.drawRegularPolygon(0, 0, 28.87, 6);
+    graphic.endFill();
+    if (j === 0) {
+        graphic.beginFill(0x1C189F);
+    } else {
+        graphic.beginFill(0xDE3249);
+    }
+    graphic.drawRegularPolygon(0, 0, 27.87, 6);
+    const texture = app.renderer.generateTexture(graphic)
+    return texture;
+}
+
+const setupTile = (app: Application) => {
+    const baseTexture = createBaseTexture(app);
     // let offSetX: number;
     console.log(window.innerWidth, window.innerHeight)
     rowCount = Math.ceil(window.innerHeight / vertDistance) + 1;
     rowLength = Math.ceil(window.innerWidth / 50) + 1;
     for (let i = 0; i < rowCount; i++) {
         // offSetX = i % 2 === 0 ? 0 : 25;
-        const row: graphicsState[] = [];
+        const row: SpriteWithState[] = [];
         for (let j = 0; j < rowLength; j++) {
-            const graphics = new Graphics();
-            graphics.beginFill(0x000000);
-            graphics.drawRegularPolygon(0, 0, 28.87, 6);
-            graphics.endFill();
-            if (j === 0) {
-                graphics.beginFill(0x1C189F);
-            } else {
-                graphics.beginFill(0xDE3249);
-            }
-            graphics.drawRegularPolygon(0, 0, 27.87, 6);
-            graphics.x = j * 50 + (i % 2 === 0 ? 0 : 25);
-            graphics.y = i * vertDistance;
-            const state: GraphicsState = {
+            var hexagonSprite = Sprite.from(baseTexture)
+            hexagonSprite.x = j * 50 + (i % 2 === 0 ? -25 : 0);
+            hexagonSprite.y = i * vertDistance - 25;
+            hexagonSprite.anchor.x = 0.5;
+            hexagonSprite.anchor.y = 0.5;
+            const state: spriteState = {
                 name: 'idle',
+                center: {x: hexagonSprite.x, y: hexagonSprite.y},
                 priority: 0,
                 actionSequence: []
             }
-            app.stage.addChild(graphics);
-            row.push({graphics, state});
+            row.push({sprite: hexagonSprite, state});
+            app.stage.addChild(hexagonSprite)
+            hexagonSprite.on('mouseenter', (event: any ) => {
+                updateHover(i, j);
+                // console.log(i, j)
+                // console.log(hexagonSprite.x, hexagonSprite.y, event)
+            });
+            hexagonSprite.eventMode = 'static';
         }
-        graphicStateArr.push(row);
+        spriteStateArr.push(row);
     }
 }
 
 const activateRunner = () => {
-    for (let i=0; i<graphicStateArr[0].length; i++) {
-        for (let j=0; j<graphicStateArr.length; j++) {
-            const {graphics} = graphicStateArr[j][i];
+    for (let i=0; i<spriteStateArr[0].length; i++) {
+        for (let j=0; j<spriteStateArr.length; j++) {
+            const {sprite, state} = spriteStateArr[j][i];
             setTimeout(() => {
                 Actions.sequence(
-                    Actions.scaleTo(graphics,   .75,  .75, .2, Interpolations.linear),
-                    Actions.scaleTo(graphics,  1.25, 1.25, .2, Interpolations.linear),
-                    Actions.scaleTo(graphics,     1,    1, .1, Interpolations.linear),
+                    Actions.scaleTo(sprite,   .75,  .75, .2, Interpolations.linear),
+                    Actions.scaleTo(sprite,  1.25, 1.25, .2, Interpolations.linear),
+                    Actions.scaleTo(sprite,     1,    1, .1, Interpolations.linear),
+                    // Actions.runFunc(()=>{
+                    //     state.name = 'idle';
+                    //     state.priority = 0;
+                    //     updateHover
+                    // })
                 ).play();
             }, (i * 100) + ( j * 10));
         }
     }
 }
 
+const activeSpriteAndPosition = {
+    sprite: <Sprite>null,
+    i: -1,
+    j: -1
+};
+const updateHover = (i: number, j: number) => {
+    const {sprite, state} = spriteStateArr[i][j];
+    if (activeSpriteAndPosition.i === i && activeSpriteAndPosition.j === j) {
+        return;
+    }
+    if (activeSpriteAndPosition.sprite !== null) {
+        const {sprite: prevSprite, i, j} = activeSpriteAndPosition;
+        const {state: prevState} = spriteStateArr[i][j];
+        prevState.name = 'idle';
+        prevState.priority = 0;
+        prevSprite.zIndex = 0;
+        Actions.sequence(
+            Actions.scaleTo(prevSprite, 1, 1, .1, Interpolations.linear),
+        ).play();
+    }
+    activeSpriteAndPosition.sprite = sprite; 
+    activeSpriteAndPosition.i = i;
+    activeSpriteAndPosition.j = j;
+    state.name = 'hover';
+    state.priority = 1;
+    sprite.zIndex = 100;
+    Actions.sequence(
+        Actions.scaleTo(sprite, 1.3, 1.3, .1, Interpolations.linear),
+        // Actions.tintTo(graphics, 0x00FF00, .1, Interpolations.linear),
+    ).play();
+}
+
 export {
     setupTile,
     activateRunner,
+    updateHover
 };
