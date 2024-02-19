@@ -45,6 +45,9 @@ app.ticker.add((delta) => {
 setupTile(app);
 
 window.onload = () => {
+    window.onresize = () => {
+        setupTile(app);
+    }
     // window.addEventListener('mousemove', (event) => {
     //     updateHover(event);
     // });

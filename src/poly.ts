@@ -16,8 +16,8 @@ interface SpriteWithState {
 }
 const spriteStateArr: SpriteWithState[][] = [];
 
-let rowLength = 0;
-let rowCount = 0;
+let activeRowLength = 0;
+let activeRowCount = 0;
 
 const createBaseTexture = (app: Application, j:number = 0) => {
     const width = 28.87;
@@ -37,14 +37,21 @@ const createBaseTexture = (app: Application, j:number = 0) => {
 
 const setupTile = (app: Application) => {
     const baseTexture = createBaseTexture(app);
-    // let offSetX: number;
-    console.log(window.innerWidth, window.innerHeight)
-    rowCount = Math.ceil(window.innerHeight / vertDistance) + 1;
-    rowLength = Math.ceil(window.innerWidth / 50) + 1;
+    const rowCount = Math.ceil(window.innerHeight / vertDistance) + 2;
+    const rowLength = Math.ceil(window.innerWidth / 50) + 1;
+    if (rowCount <= activeRowCount && rowLength <= activeRowLength) return;
     for (let i = 0; i < rowCount; i++) {
-        // offSetX = i % 2 === 0 ? 0 : 25;
-        const row: SpriteWithState[] = [];
+        let row: SpriteWithState[];
+        let newRow = true;
+        if (i < activeRowCount) {
+            row = spriteStateArr[i];
+            newRow = false;
+        } else {
+            row = [];
+            spriteStateArr.push(row);
+        }
         for (let j = 0; j < rowLength; j++) {
+            if (!newRow && j < activeRowLength) continue;
             var hexagonSprite = Sprite.from(baseTexture)
             hexagonSprite.x = j * 50 + (i % 2 === 0 ? -25 : 0);
             hexagonSprite.y = i * vertDistance - 25;
@@ -65,8 +72,9 @@ const setupTile = (app: Application) => {
             });
             hexagonSprite.eventMode = 'static';
         }
-        spriteStateArr.push(row);
     }
+    activeRowCount = rowCount;
+    activeRowLength = rowLength;
 }
 
 const activateRunner = () => {
