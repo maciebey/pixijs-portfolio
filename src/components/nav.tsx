@@ -9,12 +9,10 @@ const Nav = ({
 }: NavProps) => {
     return (
         <div className="nav">
-            <ul>
-                <li><a href="#" onClick={()=>changeActive(0)}>Home</a></li>
-                <li><a href="#" onClick={()=>changeActive(1)}>About</a></li>
-                <li><a href="#" onClick={()=>changeActive(2)}>Contact</a></li>
-                <button id="runner-button">Activate Runner</button>
-            </ul>
+            <a href="#" onClick={()=>changeActive(0)}>Contact</a>
+            <a href="#" onClick={()=>changeActive(1)}>Projects</a>
+            {/* <button id="runner-button">Activate Runner</button>
+            <button id="shaker-button">Activate Shaker</button> */}
         </div>
     )
 }

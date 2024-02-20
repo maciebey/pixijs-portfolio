@@ -2,6 +2,7 @@ import * as React from "react";
 import { createRoot } from 'react-dom/client';
 
 import Nav from "./components/nav";
+import { Section1, Projects } from "./pages";
 
 const App = () => {
 	const [activeIndex, setActiveIndex] = React.useState(0);
@@ -11,8 +12,8 @@ const App = () => {
 	}
 
 	const sections = [
-		<div>one</div>,
-		<div>two</div>,
+		<Section1 />,
+		<Projects />,
 		<div>three</div>,
 	]
 
