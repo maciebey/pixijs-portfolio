@@ -5,24 +5,11 @@ html, body {
     height: 100vh;
     overflow: hidden;
 }
+
 canvas {
     position: sticky;
     position: -webkit-sticky;
     top: 0;
-}
-
-.header {
-    position: relative;
-    border: 1px solid rgb(126, 33, 33);
-}
-.nav{
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    display: flex;
-    justify-content: center;
-    z-index: 2;
 }
 
 .main {
@@ -44,7 +31,7 @@ canvas {
     padding: 20px;
     margin: 20px;
     border: 1px solid rgb(24, 60, 170);
-    background-color: hsla(0, 0%, 100%, 0.7);
+    background-color: hsla(0, 0%, 100%, 0.9);
 }
 
 
@@ -60,4 +47,8 @@ canvas {
 
 .hidden {
     display: none;
+}
+
+.colored {
+    background-color: #f4f4f4;
 }
