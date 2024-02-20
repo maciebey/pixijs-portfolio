@@ -1,15 +1,27 @@
-import * as React from "react"; 
+import * as React from "react";
 import { createRoot } from 'react-dom/client';
 
 import Nav from "./components/nav";
 
-const App = () =>{
-  return (
-  	<div>
-		<Nav />
-		<h1>Hello from React!</h1>
-	</div>
-  );
+const App = () => {
+	const [activeIndex, setActiveIndex] = React.useState(0);
+
+	const changeActive = (newIndex: number) => {
+		setActiveIndex(newIndex)
+	}
+
+	const sections = [
+		<div>one</div>,
+		<div>two</div>,
+		<div>three</div>,
+	]
+
+	return (
+		<div>
+			<Nav changeActive={changeActive} />
+			{sections[activeIndex]}
+		</div>
+	);
 }
 
 export const startReact = () => {
