@@ -84,13 +84,13 @@ const activateRunner = () => {
             setTimeout(() => {
                 Actions.sequence(
                     Actions.scaleTo(sprite,    .4,   .4, .2, Interpolations.linear),
-                    Actions.scaleTo(sprite,    .6,   .6, .1, Interpolations.linear),
+                    Actions.rotateTo(
+                        sprite,
+                        sprite.rotation + (60 * Math.PI / 180),
+                        .2,
+                        Interpolations.linear
+                    ),
                     Actions.scaleTo(sprite,    .5,   .5, .2, Interpolations.linear),
-                    // Actions.runFunc(()=>{
-                    //     state.name = 'idle';
-                    //     state.priority = 0;
-                    //     updateHover
-                    // })
                 ).play();
             }, (i * 10) + ( j * 50));
         }
