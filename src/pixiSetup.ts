@@ -1,4 +1,6 @@
-import { Application, Sprite } from 'pixi.js';
+import { Application } from 'pixi.js';
+
+import { COLORS } from './config';
 
 /* create, set configs, and return PIXI.Application */
 export const createPixiApplication = (
@@ -6,6 +8,7 @@ export const createPixiApplication = (
 ) => {
     const app = new Application<HTMLCanvasElement>({
         resizeTo: window,
+        backgroundColor: COLORS.THREE
     });
     // z-index able chilidren
     app.stage.sortableChildren = true;

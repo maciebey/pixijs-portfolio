@@ -43,8 +43,8 @@ canvas {
     max-width: 1200px;
     padding: 20px;
     margin: 20px;
-    border: 1px solid rgb(126, 33, 33);
-    background-color: hsla(285, 100%, 80%, 0.891);
+    border: 1px solid rgb(24, 60, 170);
+    background-color: hsla(0, 0%, 100%, 0.7);
 }
 
 
@@ -60,8 +60,4 @@ canvas {
 
 .hidden {
     display: none;
-}
-
-.colored {
-    background-color: #d6d6d6;
 }

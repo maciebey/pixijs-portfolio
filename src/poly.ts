@@ -2,7 +2,7 @@ import { Application, Graphics, Sprite } from 'pixi.js';
 import { Action, Actions, Interpolations } from 'pixi-actions';
 import '@pixi/graphics-extras';
 
-import { vertDistance } from './config';
+import { vertDistance, COLORS } from './config';
 
 interface spriteState {
     name: string;
@@ -24,15 +24,12 @@ const createBaseTexture = (app: Application, j:number = 0) => {
     const hexR = (width / 2) / Math.cos(30 * Math.PI / 180);
     const innerHexR = ((width/ 2) - 2)  / Math.cos(30 * Math.PI / 180);
     const graphic = new Graphics();
-    graphic.beginFill(0x000000);
+    graphic.beginFill(COLORS.THREE);
     graphic.drawRegularPolygon(0, 0, hexR, 6);
     graphic.endFill();
-    if (j === 0) {
-        graphic.beginFill(0xD6D6D6);
-    } else {
-        graphic.beginFill(0xDE3249);
-    }
+    graphic.beginFill(COLORS.GRAYWHITE);
     graphic.drawRegularPolygon(0, 0, innerHexR, 6);
+    graphic.endFill();
     const texture = app.renderer.generateTexture(graphic)
     return texture;
 }
@@ -56,7 +53,7 @@ const setupTile = (app: Application) => {
             if (!newRow && j < activeRowLength) continue;
             var hexagonSprite = Sprite.from(baseTexture)
             hexagonSprite.x = j * 50 + (i % 2 === 0 ? -25 : 0);
-            hexagonSprite.y = i * vertDistance - 25;
+            hexagonSprite.y = i * Math.floor(vertDistance) - 25;
             hexagonSprite.anchor.x = 0.5;
             hexagonSprite.anchor.y = 0.5;
             hexagonSprite.scale.set(.5, .5);
@@ -87,7 +84,7 @@ const activateRunner = () => {
             setTimeout(() => {
                 Actions.sequence(
                     Actions.scaleTo(sprite,    .4,   .4, .2, Interpolations.linear),
-                    Actions.scaleTo(sprite,    .6,   .6, .2, Interpolations.linear),
+                    Actions.scaleTo(sprite,    .6,   .6, .1, Interpolations.linear),
                     Actions.scaleTo(sprite,    .5,   .5, .2, Interpolations.linear),
                     // Actions.runFunc(()=>{
                     //     state.name = 'idle';
