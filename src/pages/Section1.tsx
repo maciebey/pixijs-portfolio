@@ -16,6 +16,19 @@ const Section1 = () => {
         <div>
             <h1>Hi, I'm Macie Bey</h1>
             <p>{bodyText}</p>
+            <p>This portfolio site is under active development. check back for more soon!</p>
+            <p>You can contact or find me at:</p>
+            <ul>
+                <li>
+                    <a href="https://github.com/maciebeytarget=" target="_blank" rel="noreferrer">Github</a>
+                </li>
+                <li>
+                    <a href="https://www.linkedin.com/in/maciebey/" target="_blank" rel="noreferrer">LinkedIn</a>
+                </li>
+                <li>
+                    <a href="mailto:someone@yoursite.com">maciebey@gmail.com</a>
+                </li>
+            </ul>
         </div>
     );
 }
