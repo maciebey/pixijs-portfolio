@@ -3,6 +3,8 @@ import { Action, Actions, Interpolations } from 'pixi-actions';
 import '@pixi/graphics-extras';
 
 import { vertDistance, COLORS } from './config';
+import { randomIntFromInterval } from './util';
+
 
 interface spriteState {
     name: string;
@@ -97,6 +99,42 @@ const activateRunner = () => {
     }
 }
 
+const shakeRandom = () => {
+    const i = randomIntFromInterval(1, activeRowCount);
+    const j = randomIntFromInterval(1, activeRowLength);
+
+    const {sprite, state} = spriteStateArr[i - 1][j - 1];
+    if (state.currentAction !== null) {
+        state.currentAction.stop();
+    }
+
+    const singleShake = Actions.sequence(
+        Actions.rotateTo(
+            sprite,
+            sprite.rotation + (30 * Math.PI / 180),
+            .2,
+            Interpolations.linear
+        ),
+        Actions.rotateTo(
+            sprite,
+            sprite.rotation - (60 * Math.PI / 180),
+            .4,
+            Interpolations.linear
+        ),
+        Actions.rotateTo(
+            sprite,
+            0,
+            .2,
+            Interpolations.linear
+        ),
+    );
+    state.currentAction = Actions.sequence(
+        singleShake,
+        singleShake,
+        singleShake
+    ).play();
+}
+
 const activeSpriteAndPosition = {
     sprite: <Sprite>null,
     i: -1,
@@ -135,5 +173,6 @@ const updateHover = (i: number, j: number) => {
 export {
     setupTile,
     activateRunner,
+    shakeRandom,
     updateHover
 };

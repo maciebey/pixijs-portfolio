@@ -1,8 +1,8 @@
 
-import { Actions } from 'pixi-actions';
+import { Action, Actions, Interpolations } from 'pixi-actions';
 
 import {createPixiApplication} from './pixiSetup';
-import { setupTile, activateRunner } from './poly';
+import { setupTile, activateRunner, shakeRandom } from './poly';
 import { startReact } from './content';
 
 const DEMO_BACKGROUND = false;
@@ -26,10 +26,30 @@ window.onload = () => {
         setupTile(pixiApp);
     }
 
-    // button listeners
-    document.getElementById("runner-button").onclick = (event) => {
-        activateRunner();
+    let currentStageAction: Action;
+    window.onmousemove = (event) => {
+        console.log(event.clientX, event.clientY)
+        const halfWidth = window.innerWidth / 2;
+        const shiftX = 10 * (event.clientX - halfWidth) / halfWidth;
+        const halfHeight = window.innerHeight / 2;
+        const shiftY = 10 * (event.clientY - halfHeight) / halfHeight;
+        if ( pixiApp.stage.x !== shiftX || pixiApp.stage.y !== shiftY) {
+            if (currentStageAction) {
+                currentStageAction.stop();
+            }
+            currentStageAction = Actions.sequence(
+                Actions.moveTo(pixiApp.stage, shiftX, shiftY, .1, Interpolations.linear)
+            ).play();
+        }
     }
+
+    // button listeners
+    // document.getElementById("runner-button").onclick = (event) => {
+    //     activateRunner();
+    // }
+    // document.getElementById("shaker-button").onclick = (event) => {
+    //     shakeRandom();
+    // }
 
     if (DEMO_BACKGROUND) {
         setInterval(() => {
