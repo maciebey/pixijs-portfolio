@@ -57,6 +57,6 @@ canvas {
     display: none;
 }
 
-.colored {
-    background-color: #f4f4f4;
+li {
+    padding: 0 0 10px 0;
 }
