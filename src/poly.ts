@@ -85,53 +85,82 @@ const activateRunner = () => {
             const {sprite, state} = spriteStateArr[j][i];
             setTimeout(() => {
                 Actions.sequence(
-                    Actions.scaleTo(sprite,    .4,   .4, .2, Interpolations.linear),
+                    Actions.scaleTo(sprite,    .4,   .4, .1, Interpolations.linear),
                     Actions.rotateTo(
                         sprite,
-                        sprite.rotation + (60 * Math.PI / 180),
+                        0,
+                        0
+                    ),
+                    Actions.rotateTo(
+                        sprite,
+                        (60 * Math.PI / 180),
                         .2,
                         Interpolations.linear
                     ),
-                    Actions.scaleTo(sprite,    .5,   .5, .2, Interpolations.linear),
+                    Actions.scaleTo(sprite,    .5,   .5, .1, Interpolations.linear),
                 ).play();
-            }, (i * 10) + ( j * 50));
+            }, (i * 5) + ( j * 50));
         }
     }
 }
 
+const makeShakeAction = (sprite: Sprite) => {
+    return Actions.sequence(
+        Actions.rotateTo(
+            sprite,
+            (30 * Math.PI / 180),
+            .4,
+            Interpolations.smooth
+        ),
+        Actions.rotateTo(
+            sprite,
+            0 - (60 * Math.PI / 180),
+            .4,
+            Interpolations.smooth
+        ),
+    );
+}
+const resetSizeAndRotationAction = (
+    sprite: Sprite,
+    rotationTime: number = 0,
+    scaleTime: number = 0
+) => {
+    return Actions.parallel(
+        Actions.rotateTo(
+            sprite,
+            0,
+            rotationTime,
+            Interpolations.smooth
+        ),
+        Actions.scaleTo(
+            sprite,
+            .5,
+            .5,
+            scaleTime,
+            Interpolations.smooth
+        ),
+    );
+}
 const shakeRandom = () => {
     const i = randomIntFromInterval(1, activeRowCount);
     const j = randomIntFromInterval(1, activeRowLength);
 
     const {sprite, state} = spriteStateArr[i - 1][j - 1];
+    if (state.name === 'hover') {
+        return;
+    }
     if (state.currentAction !== null) {
         state.currentAction.stop();
     }
 
-    const singleShake = Actions.sequence(
-        Actions.rotateTo(
-            sprite,
-            sprite.rotation + (30 * Math.PI / 180),
-            .2,
-            Interpolations.linear
-        ),
-        Actions.rotateTo(
-            sprite,
-            sprite.rotation - (60 * Math.PI / 180),
-            .4,
-            Interpolations.linear
-        ),
-        Actions.rotateTo(
-            sprite,
-            0,
-            .2,
-            Interpolations.linear
-        ),
-    );
     state.currentAction = Actions.sequence(
-        singleShake,
-        singleShake,
-        singleShake
+        Actions.sequence(
+            Actions.scaleTo(sprite,    .45,   .45, .1, Interpolations.linear),
+            makeShakeAction(sprite),
+            makeShakeAction(sprite),
+            makeShakeAction(sprite),
+            resetSizeAndRotationAction(sprite, 0, .1),
+        )
     ).play();
 }
 
@@ -155,7 +184,7 @@ const updateHover = (i: number, j: number) => {
             prevState.currentAction.stop();
         }
         prevState.currentAction = Actions.sequence(
-            Actions.scaleTo(prevSprite, .5, .5, .1, Interpolations.linear),
+            resetSizeAndRotationAction(prevSprite, .1, .1),
         ).play();
     }
     activeSpriteAndPosition.sprite = sprite; 
@@ -164,6 +193,9 @@ const updateHover = (i: number, j: number) => {
     state.name = 'hover';
     state.priority = 1;
     sprite.zIndex = 100;
+    if (state.currentAction !== null) {
+        state.currentAction.stop();
+    }
     state.currentAction = Actions.sequence(
         Actions.scaleTo(sprite, .7, .7, .1, Interpolations.linear),
         // Actions.tintTo(graphics, 0x00FF00, .1, Interpolations.linear),

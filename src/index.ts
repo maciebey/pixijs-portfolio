@@ -5,6 +5,7 @@ import {createPixiApplication} from './pixiSetup';
 import { setupTile, activateRunner, shakeRandom } from './poly';
 import { startReact } from './content';
 
+const SHAKER = true;
 const DEMO_BACKGROUND = false;
 
 startReact();
@@ -28,7 +29,6 @@ window.onload = () => {
 
     let currentStageAction: Action;
     window.onmousemove = (event) => {
-        console.log(event.clientX, event.clientY)
         const halfWidth = window.innerWidth / 2;
         const shiftX = 10 * (event.clientX - halfWidth) / halfWidth;
         const halfHeight = window.innerHeight / 2;
@@ -43,14 +43,11 @@ window.onload = () => {
         }
     }
 
-    // button listeners
-    // document.getElementById("runner-button").onclick = (event) => {
-    //     activateRunner();
-    // }
-    // document.getElementById("shaker-button").onclick = (event) => {
-    //     shakeRandom();
-    // }
-
+    if (SHAKER) {
+        setInterval(() => {
+            shakeRandom();
+        }, 1000);
+    }
     if (DEMO_BACKGROUND) {
         setInterval(() => {
             activateRunner();
