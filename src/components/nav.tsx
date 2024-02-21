@@ -1,18 +1,26 @@
 import * as React from "react";
 import './nav.scss';
 
+import Button from "./button";
+
 interface NavProps {
     changeActive: (newIndex: number) => void;
+    activeIndex: number;
 }
 const Nav = ({
-    changeActive
+    changeActive,
+    activeIndex
 }: NavProps) => {
     return (
         <div className="nav">
-            <a href="#" onClick={()=>changeActive(0)}>Contact</a>
-            <a href="#" onClick={()=>changeActive(1)}>Projects</a>
-            {/* <button id="runner-button">Activate Runner</button>
-            <button id="shaker-button">Activate Shaker</button> */}
+            <Button onClick={()=>changeActive(0)}
+                isActive={activeIndex === 0}
+                type="A"
+                text="Contact" />
+            <Button onClick={()=>changeActive(1)}
+                isActive={activeIndex === 1}
+                type="A"
+                text="Projects" />
         </div>
     )
 }

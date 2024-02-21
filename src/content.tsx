@@ -19,7 +19,7 @@ const App = () => {
 
 	return (
 		<div>
-			<Nav changeActive={changeActive} />
+			<Nav activeIndex={activeIndex} changeActive={changeActive} />
 			{sections[activeIndex]}
 		</div>
 	);

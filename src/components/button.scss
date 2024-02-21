@@ -1,0 +1,26 @@
+$button-color: #dddddd;
+$button-color-active: #c5c4c4;
+
+.mb-button {
+    display: inline-block;
+    margin: 0 10px 0 0;
+    
+    border-radius: 3px;
+}
+
+.mb-button button {
+    border: none;
+    font-family: monospace;
+    font-size: 14px;
+    padding: 5px 15px;
+    background-color: $button-color;
+}
+
+.mb-button.active button {
+    background-color: $button-color-active;
+}
+
+.mb-button button:hover {
+    cursor: pointer;
+    background-color: $button-color-active;
+}
