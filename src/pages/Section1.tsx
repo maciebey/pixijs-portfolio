@@ -16,7 +16,7 @@ const Section1 = () => {
         <div>
             <h1>Hi, I'm Macie Bey</h1>
             <p>{bodyText}</p>
-            <p>This portfolio site is under active development. check back for more soon!</p>
+            <p>This portfolio site is under active development. Check back for more soon!</p>
             <p>You can contact or find me at:</p>
             <ul>
                 <li>

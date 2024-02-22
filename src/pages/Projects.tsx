@@ -21,7 +21,7 @@ const Projects = () => {
             <p><b>Source:</b>{makeLink('Github', 'https://github.com/maciebey/great-wave')}</p>
             <hr />
             <h2>Sound Mixer</h2>
-            <p><b>Description:</b> Small application to mix YouTube video w/ audio files/</p>
+            <p><b>Description:</b> Small application to mix YouTube video w/ audio files.</p>
             <p><b>Tech:</b> TypeScript, React, Redux, Node.js</p>
             <p><b>Source Front-End:</b>{makeLink('Github', 'https://github.com/maciebey/equalizer')}</p>
             <p><b>Source Back-End:</b>{makeLink('Github', 'https://github.com/maciebey/equalizer-api')}</p>
