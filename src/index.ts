@@ -20,7 +20,7 @@ pixiApp.ticker.add((delta) => {
 // create tiling background
 setupTile(pixiApp);
 
-// window listeners and listeners
+// window listeners
 window.onload = () => {
     // call again for adding more tiles
     window.onresize = () => {
@@ -44,9 +44,20 @@ window.onload = () => {
     }
 
     if (SHAKER) {
-        setInterval(() => {
-            shakeRandom();
-        }, 1000);
+        let shakeInterval: NodeJS.Timeout | null;
+        shakeInterval = (document.visibilityState === 'hidden') ? null :
+            setInterval(() => {
+                shakeRandom();
+            }, 1000);
+        document.addEventListener("visibilitychange", (ev)=>{
+            if (document.visibilityState === 'visible') {
+                shakeInterval = setInterval(() => {
+                    shakeRandom();
+                }, 1000);
+            } else if (shakeInterval !== null) {
+                clearInterval(shakeInterval);
+            }
+        });
     }
     if (DEMO_BACKGROUND) {
         setInterval(() => {
