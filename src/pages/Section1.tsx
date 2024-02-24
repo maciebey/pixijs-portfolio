@@ -20,13 +20,13 @@ const Section1 = () => {
             <p>You can contact or find me at:</p>
             <ul>
                 <li>
-                    <a href="https://github.com/maciebeytarget=" target="_blank" rel="noreferrer">Github</a>
+                    <a href="https://github.com/maciebey" target="_blank" rel="noreferrer">Github</a>
                 </li>
                 <li>
                     <a href="https://www.linkedin.com/in/maciebey/" target="_blank" rel="noreferrer">LinkedIn</a>
                 </li>
                 <li>
-                    <a href="mailto:someone@yoursite.com">maciebey@gmail.com</a>
+                    <a href="mailto:maciebey@gmail.com">maciebey@gmail.com</a>
                 </li>
             </ul>
         </div>
