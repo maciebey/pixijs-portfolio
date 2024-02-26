@@ -9,8 +9,8 @@ const randomIntFromInterval = (min: number, max: number) => {
 // create a hexagon texture with a border
 const createBaseHexagonTexture = (app: Application, color01: number, color02: number) => {
     const width = 100;
-    const hexR = (width / 2) / Math.cos(30 * Math.PI / 180);
-    const innerHexR = ((width/ 2) - 2)  / Math.cos(30 * Math.PI / 180);
+    const hexR = ((width / 2) + 1) / Math.cos(30 * Math.PI / 180);
+    const innerHexR = ((width / 2) - 2)  / Math.cos(30 * Math.PI / 180);
     const graphic = new Graphics();
     graphic.beginFill(color01);
     graphic.drawRegularPolygon(0, 0, hexR, 6);
