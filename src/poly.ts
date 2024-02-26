@@ -15,6 +15,7 @@ interface spriteState {
     center: {x: number, y: number};
     priority: number;
     currentAction: Action;
+    neighbors: SpriteWithState[] | null;
 }
 interface SpriteWithState {
     sprite: Sprite;
@@ -39,7 +40,7 @@ class PixiTiler {
     activeSpriteAndPosition = {
         sprite: <Sprite>null,
         i: -1,
-        j: -1
+        j: -1,
     }
 
     constructor(app: Application) {
@@ -53,6 +54,7 @@ class PixiTiler {
         const rowCount = Math.ceil(window.innerHeight / vertDistance) + 2;
         const rowLength = Math.ceil(window.innerWidth / 50) + 1;
         if (rowCount <= this.activeRowCount && rowLength <= this.activeRowLength) return;
+        // initialize sprites
         for (let i = 0; i < rowCount; i++) {
             let row: SpriteWithState[];
             let newRow = true;
@@ -71,11 +73,13 @@ class PixiTiler {
                 hexagonSprite.anchor.x = 0.5;
                 hexagonSprite.anchor.y = 0.5;
                 hexagonSprite.scale.set(.5, .5);
+                // hexagonSprite.tint = Math.random() * 0 xFFFFFF;
                 const state: spriteState = {
                     name: 'idle',
                     center: {x: hexagonSprite.x, y: hexagonSprite.y},
                     priority: 0,
-                    currentAction: null
+                    currentAction: null,
+                    neighbors: null,
                 }
                 row.push({sprite: hexagonSprite, state});
                 this.pixiApp.stage.addChild(hexagonSprite)
@@ -87,8 +91,50 @@ class PixiTiler {
                 hexagonSprite.eventMode = 'static';
             }
         }
-        this.activeRowCount = rowCount;
-        this.activeRowLength = rowLength;
+        // calculate neighbors
+        for (let i = 0; i < this.spriteStateArr.length; i++) {
+            const currentRow = this.spriteStateArr[i];
+            for (let j = 0; j < currentRow.length; j++) {
+                const neighbors = [];
+                if (i > 0) {
+                    if (i % 2 === 0) {
+                        neighbors.push(this.spriteStateArr[i - 1][j]);
+                        if (j > 0) {
+                            neighbors.push(this.spriteStateArr[i - 1][j - 1]);
+                        }
+                    }
+                    else {
+                        neighbors.push(this.spriteStateArr[i - 1][j]);
+                        if (j < currentRow.length - 1) {
+                            neighbors.push(this.spriteStateArr[i - 1][j + 1]);
+                        }
+                    }
+                }
+                if (i < this.spriteStateArr.length - 1) {
+                    if (i % 2 === 0) {
+                        neighbors.push(this.spriteStateArr[i + 1][j]);
+                        if (j > 0) {
+                            neighbors.push(this.spriteStateArr[i + 1][j - 1]);
+                        }
+                    }
+                    else {
+                        neighbors.push(this.spriteStateArr[i + 1][j]);
+                        if (j < currentRow.length - 1) {
+                            neighbors.push(this.spriteStateArr[i + 1][j + 1]);
+                        }
+                    }
+                }
+                if (j > 0) {
+                    neighbors.push(currentRow[j - 1]);
+                }
+                if (j < currentRow.length - 1) {
+                    neighbors.push(currentRow[j + 1]);
+                }
+                currentRow[j].state.neighbors = neighbors;
+            }
+        }
+        this.activeRowCount = Math.max(rowCount, this.activeRowCount);
+        this.activeRowLength = Math.max(rowLength, this.activeRowLength);
     }
     
     activateRunner() {
@@ -109,7 +155,7 @@ class PixiTiler {
                             .2,
                             Interpolations.linear
                         ),
-                        Actions.scaleTo(sprite,    .5,   .5, .1, Interpolations.linear),
+                        makeResetSizeAndRotationAction(sprite, 0, .1),
                     ).play();
                 }, (i * 5) + ( j * 50));
             }
@@ -140,26 +186,43 @@ class PixiTiler {
     }
 
     updateHover = (i: number, j: number) => {
-        const {sprite, state} = this.spriteStateArr[i][j];
-        if (this.activeSpriteAndPosition.i === i && this.activeSpriteAndPosition.j === j) {
+        const {i: prevI, j: prevJ} = this.activeSpriteAndPosition;
+        if (prevI === i && prevJ === j) {
             return;
         }
+        // reset the last hover
         if (this.activeSpriteAndPosition.sprite !== null) {
-            const {sprite: prevSprite, i: prevI, j: prevJ} = this.activeSpriteAndPosition;
-            const {state: prevState} = this.spriteStateArr[prevI][prevJ];
-            prevState.name = 'idle';
-            prevState.priority = 0;
-            prevSprite.zIndex = 0;
-            if (prevState.currentAction !== null) {
-                prevState.currentAction.stop();
+            const ss = this.spriteStateArr[prevI][prevJ];
+            this.setSpriteToIdle(ss);
+            for (const neighbor of ss.state.neighbors) {
+                this.setSpriteToIdle(neighbor)
             }
-            prevState.currentAction = Actions.sequence(
-                makeResetSizeAndRotationAction(prevSprite, .1, .1),
-            ).play();
         }
-        this.activeSpriteAndPosition.sprite = sprite; 
+        const ss = this.spriteStateArr[i][j];
+        this.activeSpriteAndPosition.sprite = ss.sprite; 
         this.activeSpriteAndPosition.i = i;
         this.activeSpriteAndPosition.j = j;
+        this.setSpriteToHover(ss);
+        for (const neighbor of ss.state.neighbors) {
+            this.setSpriteToNeighbor(neighbor)
+        }
+    }
+
+    setSpriteToIdle = (ss: SpriteWithState) => {
+        const {sprite, state} = ss;
+        state.name = 'idle';
+        state.priority = 0;
+        sprite.zIndex = 0;
+        if (state.currentAction !== null) {
+            state.currentAction.stop();
+        }
+        state.currentAction = Actions.sequence(
+            makeResetSizeAndRotationAction(sprite, .1, .1),
+        ).play();
+    }
+
+    setSpriteToHover = (ss: SpriteWithState) => {
+        const {sprite, state} = ss;
         state.name = 'hover';
         state.priority = 1;
         sprite.zIndex = 100;
@@ -168,7 +231,19 @@ class PixiTiler {
         }
         state.currentAction = Actions.sequence(
             Actions.scaleTo(sprite, .7, .7, .1, Interpolations.linear),
-            // Actions.tintTo(graphics, 0x00FF00, .1, Interpolations.linear),
+        ).play();
+    }
+
+    setSpriteToNeighbor = (ss: SpriteWithState) => {
+        const {sprite, state} = ss;
+        state.name = 'neighbor';
+        state.priority = 1;
+        sprite.zIndex = 99;
+        if (state.currentAction !== null) {
+            state.currentAction.stop();
+        }
+        state.currentAction = Actions.sequence(
+            Actions.scaleTo(sprite, .6, .6, .1, Interpolations.linear),
         ).play();
     }
 }
