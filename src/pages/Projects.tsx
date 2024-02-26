@@ -1,11 +1,8 @@
 import * as React from 'react';
+import { makeLink } from './Section1';
+
 
 const Projects = () => {
-    const makeLink = (text: string, url: string) => {
-        return (
-            <a href={url} target="_blank" rel="noreferrer">{text}</a>
-        )
-    }
     return (
         <div>
             <h1>Projects</h1>
