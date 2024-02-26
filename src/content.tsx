@@ -3,14 +3,14 @@ import { createRoot } from 'react-dom/client';
 
 import Nav from "./components/nav";
 import { Section1, Projects } from "./pages";
-import { activateRunner } from "./poly";
+import { getTilerInstance } from "./poly";
 
 const App = () => {
 	const [activeIndex, setActiveIndex] = React.useState(0);
 
 	const changeActive = (newIndex: number) => {
 		setActiveIndex(newIndex)
-		activateRunner();
+		getTilerInstance().activateRunner();
 	}
 
 	const sections = [

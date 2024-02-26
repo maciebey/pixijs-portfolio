@@ -2,7 +2,7 @@
 import { Action, Actions, Interpolations } from 'pixi-actions';
 
 import {createPixiApplication} from './pixiSetup';
-import { setupTile, activateRunner, shakeRandom } from './poly';
+import PixiTiler from './poly';
 import { startReact } from './content';
 
 const SHAKER = true;
@@ -18,13 +18,13 @@ pixiApp.ticker.add((delta) => {
 });
 
 // create tiling background
-setupTile(pixiApp);
+const pt = new PixiTiler(pixiApp);
 
 // window listeners
 window.onload = () => {
     // call again for adding more tiles
     window.onresize = () => {
-        setupTile(pixiApp);
+        pt.setupTiles();
     }
 
     let currentStageAction: Action;
@@ -47,12 +47,12 @@ window.onload = () => {
         let shakeInterval: NodeJS.Timeout | null;
         shakeInterval = (document.visibilityState === 'hidden') ? null :
             setInterval(() => {
-                shakeRandom();
+                pt.shakeRandom();
             }, 1000);
         document.addEventListener("visibilitychange", (ev)=>{
             if (document.visibilityState === 'visible') {
                 shakeInterval = setInterval(() => {
-                    shakeRandom();
+                    pt.shakeRandom();
                 }, 1000);
             } else if (shakeInterval !== null) {
                 clearInterval(shakeInterval);
@@ -61,7 +61,7 @@ window.onload = () => {
     }
     if (DEMO_BACKGROUND) {
         setInterval(() => {
-            activateRunner();
+            pt.activateRunner();
         }, 5000);
     }
 }
