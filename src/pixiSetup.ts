@@ -8,7 +8,8 @@ export const createPixiApplication = (
 ) => {
     const app = new Application<HTMLCanvasElement>({
         resizeTo: window,
-        backgroundColor: COLORS.THREE
+        backgroundColor: COLORS.THREE,
+        antialias: true,
     });
     // z-index able chilidren
     app.stage.sortableChildren = true;
