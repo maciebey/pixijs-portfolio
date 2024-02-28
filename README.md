@@ -1,4 +1,4 @@
-# Macie Bey - Portfolio & Tiling
+# Portfolio with Tiling Background
 
 Portfolio website written in Typescript. Featuring dynamic tiling background created with 2D WebGL renderer [PixiJS](https://pixijs.com/).
 
