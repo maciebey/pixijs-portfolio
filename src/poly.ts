@@ -37,6 +37,8 @@ class PixiTiler {
     spriteStateArr: SpriteWithState[][] = [];
     activeRowCount: number = 0;
     activeRowLength: number = 0;
+    currentVisibleTilesX: number = 0;
+    currentVisibleTilesY: number = 0;
     activeSpriteAndPosition = {
         sprite: <Sprite>null,
         i: -1,
@@ -50,9 +52,19 @@ class PixiTiler {
     }
 
     setupTiles() {
-        const baseTexture = createBaseHexagonTexture(this.pixiApp, COLORS.THREE, COLORS.GRAYWHITE);
+        const createHexTexture = (innerColor: number) => createBaseHexagonTexture(
+            this.pixiApp, COLORS.BLACK, innerColor
+        );
+
+        const btOne = createHexTexture(0x8189B1);
+        const btTwo = btOne;
+        const btThree = createHexTexture(0x616C9E);
+        
+
         const rowCount = Math.ceil(window.innerHeight / vertDistance) + 2;
         const rowLength = Math.ceil(window.innerWidth / 50) + 1;
+        this.currentVisibleTilesX = rowLength;
+        this.currentVisibleTilesY = rowCount;
         if (rowCount <= this.activeRowCount && rowLength <= this.activeRowLength) return;
         // initialize sprites
         for (let i = 0; i < rowCount; i++) {
@@ -65,15 +77,26 @@ class PixiTiler {
                 row = [];
                 this.spriteStateArr.push(row);
             }
+            let k = (i % 2 === 0 ? 0 : 2);
             for (let j = 0; j < rowLength; j++) {
-                if (!newRow && j < this.activeRowLength) continue;
-                var hexagonSprite = Sprite.from(baseTexture)
+                if (!newRow && j < this.activeRowLength) {
+                    k = (k + 1) % 3;
+                    continue;
+                }
+                let hexagonSprite: Sprite;
+                if (k === 0) {
+                    hexagonSprite = Sprite.from(btOne);
+                } else if (k === 1) {
+                    hexagonSprite = Sprite.from(btTwo);
+                } else {
+                    hexagonSprite = Sprite.from(btThree);
+                }
+                k = (k + 1) % 3;
                 hexagonSprite.x = j * 50 + (i % 2 === 0 ? -25 : 0);
                 hexagonSprite.y = i * Math.floor(vertDistance) - 25;
                 hexagonSprite.anchor.x = 0.5;
                 hexagonSprite.anchor.y = 0.5;
                 hexagonSprite.scale.set(.5, .5);
-                // hexagonSprite.tint = Math.random() * 0 xFFFFFF;
                 const state: spriteState = {
                     name: 'idle',
                     center: {x: hexagonSprite.x, y: hexagonSprite.y},
