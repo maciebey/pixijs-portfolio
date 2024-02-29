@@ -161,25 +161,43 @@ class PixiTiler {
     }
     
     activateRunner() {
-        for (let i=0; i<this.spriteStateArr[0].length; i++) {
-            for (let j=0; j<this.spriteStateArr.length; j++) {
+        let startI = 0;
+        let endI = this.currentVisibleTilesX;
+        let startJ = 0;
+        let endJ = this.currentVisibleTilesY;
+
+        // limit total width for performace, probably will
+        // only happen if some zooms out browser
+        if (endI > 100) {
+            startI = Math.floor(endI / 2) - 50;
+            endI = startI + 100;
+        }
+
+        for (let i=startI; i<endI; i++) {
+            for (let j=startJ; j<endJ; j++) {
                 const {sprite, state} = this.spriteStateArr[j][i];
+
+                const tileActionSequence = Actions.sequence(
+                    Actions.scaleTo(sprite,    .4,   .4, .1, Interpolations.linear),
+                    Actions.rotateTo(
+                        sprite,
+                        0,
+                        0
+                    ),
+                    Actions.rotateTo(
+                        sprite,
+                        (60 * Math.PI / 180),
+                        .2,
+                        Interpolations.linear
+                    ),
+                    makeResetSizeAndRotationAction(sprite, 0, .1),
+                );
+
                 setTimeout(() => {
-                    Actions.sequence(
-                        Actions.scaleTo(sprite,    .4,   .4, .1, Interpolations.linear),
-                        Actions.rotateTo(
-                            sprite,
-                            0,
-                            0
-                        ),
-                        Actions.rotateTo(
-                            sprite,
-                            (60 * Math.PI / 180),
-                            .2,
-                            Interpolations.linear
-                        ),
-                        makeResetSizeAndRotationAction(sprite, 0, .1),
-                    ).play();
+                    if (state.currentAction !== null) {
+                        state.currentAction.stop();
+                    }
+                    tileActionSequence.play();
                 }, (i * 5) + ( j * 50));
             }
         }
@@ -199,7 +217,7 @@ class PixiTiler {
     
         state.currentAction = Actions.sequence(
             Actions.sequence(
-                Actions.scaleTo(sprite,    .45,   .45, .1, Interpolations.linear),
+                Actions.scaleTo(sprite,    .4,   .4, .1, Interpolations.linear),
                 makeShakeAction(sprite),
                 makeShakeAction(sprite),
                 makeShakeAction(sprite),
