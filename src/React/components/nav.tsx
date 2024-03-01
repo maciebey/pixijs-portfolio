@@ -1,7 +1,7 @@
 import * as React from "react";
 import './nav.scss';
 
-import Button from "./button";
+import { Button } from "./";
 
 interface NavProps {
     changeActive: (newIndex: number) => void;

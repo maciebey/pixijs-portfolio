@@ -1,28 +1,36 @@
 import * as React from "react";
 import ReactCSSTransitionReplace from 'react-css-transition-replace';
 
-import Nav from "./components/nav";
+import { Nav, TileSettings } from "./components";
 import { Section1, Projects } from "./pages";
 import { getTilerInstance } from "../poly";
 
 import './App.scss';
 
 const App = () => {
-	const [activeIndex, setActiveIndex] = React.useState(0);
+    const [activeIndex, setActiveIndex] = React.useState(0);
+    const [isLoaded, setIsLoaded] = React.useState(false);
 
-	const changeActive = (newIndex: number) => {
-		setActiveIndex(newIndex)
-		getTilerInstance().activateRunner();
-	}
+    React.useEffect(() => {
+        // let App render then remove hidden class
+        setTimeout(() => {
+            setIsLoaded(true)
+        }, 1)
+    }, [])
 
-	const sections = [
-		<Section1 />,
-		<Projects />,
-	]
+    const changeActive = (newIndex: number) => {
+        setActiveIndex(newIndex)
+        getTilerInstance().activateRunner();
+    }
 
-	return (
+    const sections = [
+        <Section1 />,
+        <Projects />,
+    ]
+
+    return (
         <>
-            <div className="main">
+            <div className={`main ${isLoaded ? '' : 'hidden'}`} key='main'>
                 <Nav activeIndex={activeIndex} changeActive={changeActive} />
                 <ReactCSSTransitionReplace
                     transitionName="fade-wait"
@@ -34,8 +42,9 @@ const App = () => {
                     </div>
                 </ReactCSSTransitionReplace>
             </div>
+            <TileSettings />
         </>
-	);
+    );
 }
 
 export default App;
