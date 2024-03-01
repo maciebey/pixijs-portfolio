@@ -12,7 +12,7 @@ export const makeLink = (text: string, url: string) => {
 
 const Section1 = () => {
     return (
-        <div>
+        <div style={{'display': 'inline-block'}}>
             <h1>Hi, I'm Macie Bey</h1>
             <p>{bodyText}</p>
             <p>This portfolio site is under {makeLink('active development', 'https://github.com/maciebey/pixijs-portfolio')}! Check back for more soon!</p>

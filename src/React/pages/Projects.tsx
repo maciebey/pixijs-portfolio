@@ -4,7 +4,7 @@ import { makeLink } from './Section1';
 
 const Projects = () => {
     return (
-        <div>
+        <div style={{'display': 'inline-block', 'width': '100%'}}>
             <h1>Projects</h1>
             <hr />
             <h2>www.mbdv.io</h2>
