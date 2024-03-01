@@ -13,7 +13,7 @@ canvas {
     top: 0;
 }
 
-.main {
+#react-container {
     position: absolute;
     top: 0;
     left: 0;
@@ -24,24 +24,6 @@ canvas {
     z-index: 1;
     overflow-y: auto;
 }
-
-.main > div {
-    position: relative;
-    width: 100%;
-    max-width: 1200px;
-    min-height: 400px;
-    padding: 20px;
-    margin: auto;
-    /* From https://css.glass */
-    background: rgba(255, 255, 255, 0.75);
-    border-radius: 16px;
-    box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
-    backdrop-filter: blur(5.1px);
-    -webkit-backdrop-filter: blur(5.1px);
-    /* border: 1px solid rgba(255, 255, 255, 0.3); */
-    border: 14px solid rgba(0, 0, 0, 0.11);
-}
-
 
 .section {
     position: relative;

@@ -1,3 +1,22 @@
+/* primary content area */
+.main {
+    position: relative;
+    width: 100%;
+    max-width: 1200px;
+    min-height: 400px;
+    padding: 20px;
+    margin: auto;
+    /* From https://css.glass */
+    background: rgba(255, 255, 255, 0.75);
+    border-radius: 16px;
+    box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+    backdrop-filter: blur(5.1px);
+    -webkit-backdrop-filter: blur(5.1px);
+    /* border: 1px solid rgba(255, 255, 255, 0.3); */
+    border: 14px solid rgba(0, 0, 0, 0.11);
+}
+
+/* react-css-transition-replace css animations */
 .fade-wait-leave {
     opacity: 1;
 }
@@ -18,5 +37,5 @@
 }
 
 .fade-wait-height {
-    transition: height 0.6s ease-in-out;
+    transition: height 1.0s ease-in-out;
 }

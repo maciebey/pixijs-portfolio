@@ -21,18 +21,20 @@ const App = () => {
 	]
 
 	return (
-		<div>
-			<Nav activeIndex={activeIndex} changeActive={changeActive} />
-			<ReactCSSTransitionReplace
-                transitionName="fade-wait"
-                transitionEnterTimeout={1000}
-                transitionLeaveTimeout={400}
-            >
-                <div key={`display-${activeIndex}`}>
-                    {sections[activeIndex]}
-                </div>
-			</ReactCSSTransitionReplace>
-		</div>
+        <>
+            <div className="main">
+                <Nav activeIndex={activeIndex} changeActive={changeActive} />
+                <ReactCSSTransitionReplace
+                    transitionName="fade-wait"
+                    transitionEnterTimeout={1000}
+                    transitionLeaveTimeout={400}
+                >
+                    <div key={`display-${activeIndex}`}>
+                        {sections[activeIndex]}
+                    </div>
+                </ReactCSSTransitionReplace>
+            </div>
+        </>
 	);
 }
 
