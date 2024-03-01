@@ -1,14 +1,14 @@
 
 import { Action, Actions, Interpolations } from 'pixi-actions';
 
-import {createPixiApplication} from './pixiSetup';
-import PixiTiler from './poly';
-import { startReact } from './content';
+import { setupReact } from './setupReact';
+import { createPixiApplication } from './setupPixi';
+import PixiTiler from './PixiTiler';
 
 const SHAKER = true;
 const DEMO_BACKGROUND = false;
 
-startReact();
+setupReact();
 
 // pixi.js setup
 const pixiApp = createPixiApplication('pixi-container')

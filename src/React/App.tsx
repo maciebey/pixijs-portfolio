@@ -3,7 +3,7 @@ import ReactCSSTransitionReplace from 'react-css-transition-replace';
 
 import { Nav, TileSettings } from "./components";
 import { Section1, Projects } from "./pages";
-import { getTilerInstance } from "../poly";
+import { getTilerInstance } from "../PixiTiler";
 
 import './App.scss';
 
