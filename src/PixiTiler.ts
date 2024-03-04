@@ -9,6 +9,7 @@ import {
     makeShakeAction,
     makeResetSizeAndRotationAction,
 } from './util';
+import { ColorSets, TileSetting } from './PixiTilerConfig';
 
 interface spriteState {
     name: string;
@@ -44,21 +45,26 @@ class PixiTiler {
         i: -1,
         j: -1,
     }
+    activeTileSettings: TileSetting[];
 
     constructor(app: Application) {
         this.pixiApp = app;
         pixiTilerInstance = this;
+        this.activeTileSettings = ColorSets['Purpley'];
         this.setupTiles();
     }
 
     setupTiles() {
-        const createHexTexture = (innerColor: number) => createBaseHexagonTexture(
-            this.pixiApp, COLORS.BLACK, innerColor
+        const createHexTexture = (
+            innerColor: number,
+            outerColor: number = COLORS.BLACK
+        ) => createBaseHexagonTexture(
+            this.pixiApp, outerColor, innerColor
         );
 
-        const btOne = createHexTexture(0x8189B1);
-        const btTwo = btOne;
-        const btThree = createHexTexture(0x616C9E);
+        const textures = this.activeTileSettings.map((ts) => {
+            return createHexTexture(ts.innerColor);
+        });
         
 
         const rowCount = Math.ceil(window.innerHeight / vertDistance) + 2;
@@ -83,14 +89,7 @@ class PixiTiler {
                     k = (k + 1) % 3;
                     continue;
                 }
-                let hexagonSprite: Sprite;
-                if (k === 0) {
-                    hexagonSprite = Sprite.from(btOne);
-                } else if (k === 1) {
-                    hexagonSprite = Sprite.from(btTwo);
-                } else {
-                    hexagonSprite = Sprite.from(btThree);
-                }
+                const hexagonSprite: Sprite = Sprite.from(textures[k]);
                 k = (k + 1) % 3;
                 hexagonSprite.x = j * 50 + (i % 2 === 0 ? -25 : 0);
                 hexagonSprite.y = i * Math.floor(vertDistance) - 25;
